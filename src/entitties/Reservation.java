@@ -1,5 +1,6 @@
 package entitties;
 
+import exceptions.DomainException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -12,10 +13,16 @@ public class Reservation {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Reservation() {
+    public Reservation()  {
+        if (!checkOut.after((checkIn))) {
+            throw new DomainException("Check-out date must be after check-in date ");
+        }
     }
 
-    public Reservation(Integer rooNumber, Date checkIn, Date checkOut) {
+    public Reservation(Integer rooNumber, Date checkIn, Date checkOut)  {
+        if (!checkOut.after((checkIn))) {
+            throw new DomainException("Check-out date must be after check-in date ");
+        }
         this.rooNumber = rooNumber;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -44,20 +51,18 @@ public class Reservation {
 
     }
 
-    public String updateDates(Date checkIn, Date checkout) {
+    public void updateDates(Date checkIn, Date checkout)  {
 
         Date now = new Date();
         if (checkIn.before(now) || checkOut.before(now)) {
 
-            return " Reservation dates for update must be future dates";
+            throw new DomainException(" Reservation dates for update must be future dates");
         }
         if (!checkOut.after((checkIn))) {
-
-            return "Check-out date must be after check-in date ";
+            throw new DomainException("Check-out date must be after check-in date ");
         }
         this.checkIn = checkIn;
         this.checkOut = checkout;
-        return null;
 
     }
 
